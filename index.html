@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Rentabilidad y Distribución</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --success-bg: #dcfce7;
+            --success-text: #166534;
+            --warn-bg: #fef9c3;
+            --warn-text: #854d0e;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); padding: 24px; line-height: 1.5; }
+        .container { max-width: 1250px; margin: 0 auto; }
+
+        /* Cabecera y Selector de Perfiles / Carpetas */
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        .brand h1 { font-size: 1.35rem; font-weight: 700; }
+        .brand p { font-size: 0.85rem; color: #94a3b8; }
+
+        .profile-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile-bar select, .profile-bar button {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #475569;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .profile-bar select { background: #0f172a; color: white; font-weight: 600; min-width: 220px; }
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s;
+            font-size: 0.85rem;
+        }
+        .btn:hover { background: var(--accent-hover); }
+        .btn-secondary { background: #334155; color: white; border: none; }
+        .btn-secondary:hover { background: #475569; }
+        .btn-outline { background: white; color: var(--text); border: 1px solid var(--border); }
+        .btn-outline:hover { background: #f1f5f9; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* Tarjetas de Resumen (KPIs) */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: var(--card);
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .kpi-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; }
+        .kpi-value { font-size: 1.65rem; font-weight: 700; margin-top: 6px; }
+
+        /* Paneles Principales */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 960px) { .main-grid { grid-template-columns: 1fr; } }
+
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+        }
+        .card h2 { font-size: 1.05rem; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; color: #334155; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 9px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.92rem;
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* Vista previa en tiempo real */
+        .live-preview {
+            background: #f1f5f9;
+            padding: 14px;
+            border-radius: 8px;
+            margin: 14px 0;
+            border-left: 4px solid var(--accent);
+        }
+        .live-preview-row { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; }
+        .live-preview-row strong { font-size: 0.98rem; }
+
+        /* Tabla de Base de Datos */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            min-width: 250px;
+            font-size: 0.9rem;
+        }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #f8fafc; font-weight: 600; color: #475569; white-space: nowrap; }
+        tr:hover { background: #f8fafc; }
+        .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+        /* Etiquetas de Evaluación */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.78rem;
+            white-space: nowrap;
+        }
+        .badge-success { background: var(--success-bg); color: var(--success-text); }
+        .badge-warn { background: var(--warn-bg); color: var(--warn-text); }
+        .badge-danger { background: var(--danger-bg); color: var(--danger-text); }
+
+        .folder-bar {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: #1e3a8a;
+        }
+        .folder-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- CABECERA Y SELECTOR DE EMPRESA/PERFIL -->
+    <header>
+        <div class="brand">
+            <h1 id="headerCompanyTitle">📦 Base de Datos de Distribución</h1>
+            <p>Cálculo automático de beneficios y evaluación de viabilidad comercial</p>
+        </div>
+        <div class="profile-bar">
+            <label for="profileSelect" style="font-size:0.85rem; color:#cbd5e1;">Perfil / Distribuidor:</label>
+            <select id="profileSelect" onchange="switchProfile(this.value)"></select>
+            <button class="btn" onclick="createNewProfile()">+ Nuevo Distribuidor</button>
+            <button class="btn btn-secondary" onclick="renameCurrentProfile()">✏️ Renombrar</button>
+            <button class="btn btn-danger" onclick="deleteCurrentProfile()">🗑️</button>
+        </div>
+    </header>
+
+    <!-- BARRA DE TRABAJO POR CARPETAS -->
+    <div class="folder-bar">
+        <div>
+            <strong>📁 Modo Carpetas Independientes:</strong> Puedes guardar la base de datos de este distribuidor en su propia carpeta del PC o abrir el archivo de otro cliente.
+        </div>
+        <div class="folder-actions">
+            <button class="btn btn-outline" onclick="exportProfileJSON()">💾 Guardar BD en Carpeta (.json)</button>
+            <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">📂 Cargar BD desde Carpeta (.json)</button>
+            <button class="btn btn-outline" onclick="exportCSV()">📊 Exportar a Excel (.csv)</button>
+            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importProfileJSON(event)">
+        </div>
+    </div>
+
+    <!-- TARJETAS DE RESUMEN (KPIs) -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-title">Coste Total Acumulado</div>
+            <div class="kpi-value" id="kpiCost">0,00 €</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Ingresos Totales</div>
+            <div class="kpi-value" id="kpiRevenue">0,00 €</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Beneficio Neto Total (3er Dato)</div>
+            <div class="kpi-value" id="kpiProfit">0,00 €</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Operaciones que "Valen la pena"</div>
+            <div class="kpi-value" id="kpiWorthIt">0 / 0</div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- COLUMNA IZQUIERDA: ENTRADA MANUAL Y REGLAS -->
+        <div>
+            <div class="card">
+                <h2>➕ Introducir Operación / Lote</h2>
+                <form id="entryForm" onsubmit="addRecord(event)">
+                    <div class="form-group">
+                        <label>Producto / Lote (ej. Palet Naranja, Aguacate Hass)</label>
+                        <input type="text" id="prodName" placeholder="Nombre de la mercancía..." required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cliente / Destino</label>
+                            <input type="text" id="clientName" placeholder="Ej. Mercalicante / Supermercado">
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad (Kg / Cajas)</label>
+                            <input type="number" id="qty" step="any" min="0.01" value="1" oninput="updateLivePreview()" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Coste Compra Total (€)</label>
+                            <input type="number" id="buyCost" step="0.01" min="0" placeholder="0.00" oninput="updateLivePreview()" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Logística / Merma (€)</label>
+                            <input type="number" id="extraCost" step="0.01" min="0" value="0" oninput="updateLivePreview()" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ingreso Total de Venta (€)</label>
+                        <input type="number" id="sellRevenue" step="0.01" min="0" placeholder="0.00" oninput="updateLivePreview()" required>
+                    </div>
+
+                    <!-- VISTA PREVIA AUTOMÁTICA -->
+                    <div class="live-preview">
+                        <div class="live-preview-row">
+                            <span>Coste Total (Compra + Logística):</span>
+                            <strong id="prevTotalCost">0,00 €</strong>
+                        </div>
+                        <div class="live-preview-row">
+                            <span>Beneficio Neto (Automático):</span>
+                            <strong id="prevProfit">0,00 €</strong>
+                        </div>
+                        <div class="live-preview-row">
+                            <span>Margen sobre coste:</span>
+                            <strong id="prevMargin">0,0 %</strong>
+                        </div>
+                        <div class="live-preview-row" style="margin-top:8px; padding-top:8px; border-top:1px solid #cbd5e1;">
+                            <span>Dictamen:</span>
+                            <span id="prevVerdict"><span class="badge badge-warn">Introduce datos</span></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" style="width:100%; padding:11px;">Guardar en Base de Datos</button>
+                </form>
+            </div>
+
+            <!-- CRITERIOS DE RENTABILIDAD PERSONALIZABLES POR DISTRIBUIDOR -->
+            <div class="card">
+                <h2>⚙️ Criterio: ¿Cuándo vale la pena?</h2>
+                <p style="font-size:0.8rem; color:var(--muted); margin-bottom:12px;">
+                    Ajusta las reglas para este distribuidor. La tabla se recalculará automáticamente al instante.
+                </p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Margen Mínimo (%)</label>
+                        <input type="number" id="ruleMinMargin" step="0.5" value="15" oninput="saveRules()">
+                    </div>
+                    <div class="form-group">
+                        <label>Beneficio Mínimo (€)</label>
+                        <input type="number" id="ruleMinProfit" step="1" value="50" oninput="saveRules()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: TABLA DE LA BASE DE DATOS -->
+        <div class="card">
+            <div class="toolbar">
+                <h2 style="border:none; margin:0; padding:0;">📋 Registros del Distribuidor</h2>
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar producto, cliente o estado..." oninput="renderTable()">
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Producto / Lote</th>
+                            <th>Cliente</th>
+                            <th class="num">Cant.</th>
+                            <th class="num">Coste Total</th>
+                            <th class="num">Ingreso Venta</th>
+                            <th class="num">Beneficio (Auto)</th>
+                            <th class="num">Margen</th>
+                            <th>¿Vale la pena?</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="dbTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = 'db_distribucion_multiperfil_v1';
+
+    // Datos iniciales de ejemplo con FRUTAS CADAPA SL y un segundo perfil genérico
+    const defaultData = {
+        currentProfile: 'FRUTAS CADAPA SL',
+        profiles: {
+            'FRUTAS CADAPA SL': {
+                rules: { minMargin: 18, minProfit: 80 },
+                records: [
+                    { id: 1, date: '20/10/2026', product: 'Palet Naranja Navelina (900 kg)', client: 'Supermercados Levante', qty: 900, buyCost: 540, extraCost: 60, sellRevenue: 890 },
+                    { id: 2, date: '20/10/2026', product: 'Cajas Aguacate Hass Primera', client: 'Hostelería Centro', qty: 80, buyCost: 680, extraCost: 45, sellRevenue: 980 },
+                    { id: 3, date: '20/10/2026', product: 'Partida Tomate Pera', client: 'Merca Mayorista', qty: 500, buyCost: 350, extraCost: 50, sellRevenue: 430 },
+                    { id: 4, date: '20/10/2026', product: 'Lote Fresa con merma por transporte', client: 'Liquidación Local', qty: 120, buyCost: 260, extraCost: 40, sellRevenue: 275 }
+                ]
+            },
+            'DISTRIBUIDORA GENÉRICA SL': {
+                rules: { minMargin: 15, minProfit: 50 },
+                records: [
+                    { id: 101, date: '20/10/2026', product: 'Lote Aceite de Oliva Virgen 5L', client: 'Distribución Regional', qty: 60, buyCost: 1200, extraCost: 50, sellRevenue: 1550 }
+                ]
+            }
+        }
+    };
+
+    let appState = loadState();
+
+    function loadState() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try { return JSON.parse(saved); } catch (e) { console.error(e); }
+        }
+        return JSON.parse(JSON.stringify(defaultData));
+    }
+
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
+
+    // Motor de cálculo automático (Tercer dato + Evaluación de rentabilidad)
+    function evaluateOperation(buyCost, extraCost, sellRevenue, rules) {
+        const totalCost = Number(buyCost) + Number(extraCost);
+        const profit = Number(sellRevenue) - totalCost;
+        const margin = totalCost > 0 ? (profit / totalCost) * 100 : (profit > 0 ? 100 : 0);
+
+        let statusText = '';
+        let badgeClass = '';
+        let worthIt = false;
+
+        if (profit <= 0) {
+            statusText = '❌ No vale la pena (Pérdida)';
+            badgeClass = 'badge-danger';
+        } else if (margin >= rules.minMargin && profit >= rules.minProfit) {
+            statusText = '✅ Vale la pena (Rentable)';
+            badgeClass = 'badge-success';
+            worthIt = true;
+        } else {
+            statusText = '⚠️ Margen bajo (No compensa)';
+            badgeClass = 'badge-warn';
+        }
+
+        return { totalCost, profit, margin, statusText, badgeClass, worthIt };
+    }
+
+    function formatCurrency(val) {
+        return Number(val).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    }
+
+    function initUI() {
+        const select = document.getElementById('profileSelect');
+        select.innerHTML = '';
+        Object.keys(appState.profiles).forEach(profileName => {
+            const opt = document.createElement('option');
+            opt.value = profileName;
+            opt.textContent = profileName;
+            if (profileName === appState.currentProfile) opt.selected = true;
+            select.appendChild(opt);
+        });
+
+        const current = appState.profiles[appState.currentProfile];
+        document.getElementById('headerCompanyTitle').textContent = '📦 ' + appState.currentProfile;
+        document.getElementById('ruleMinMargin').value = current.rules.minMargin;
+        document.getElementById('ruleMinProfit').value = current.rules.minProfit;
+
+        updateLivePreview();
+        renderTable();
+    }
+
+    function updateLivePreview() {
+        const buy = parseFloat(document.getElementById('buyCost').value) || 0;
+        const extra = parseFloat(document.getElementById('extraCost').value) || 0;
+        const sell = parseFloat(document.getElementById('sellRevenue').value) || 0;
+        const rules = appState.profiles[appState.currentProfile].rules;
+
+        const calc = evaluateOperation(buy, extra, sell, rules);
+
+        document.getElementById('prevTotalCost').textContent = formatCurrency(calc.totalCost);
+        document.getElementById('prevProfit').textContent = formatCurrency(calc.profit);
+        document.getElementById('prevProfit').style.color = calc.profit >= 0 ? '#166534' : '#991b1b';
+        document.getElementById('prevMargin').textContent = calc.margin.toFixed(1) + ' %';
+        document.getElementById('prevVerdict').innerHTML = `<span class="badge ${calc.badgeClass}">${calc.statusText}</span>`;
+    }
+
+    function addRecord(e) {
+        e.preventDefault();
+        const current = appState.profiles[appState.currentProfile];
+        const newRecord = {
+            id: Date.now(),
+            date: new Date().toLocaleDateString('es-ES'),
+            product: document.getElementById('prodName').value.trim(),
+            client: document.getElementById('clientName').value.trim() || 'General',
+            qty: parseFloat(document.getElementById('qty').value) || 1,
+            buyCost: parseFloat(document.getElementById('buyCost').value) || 0,
+            extraCost: parseFloat(document.getElementById('extraCost').value) || 0,
+            sellRevenue: parseFloat(document.getElementById('sellRevenue').value) || 0
+        };
+
+        current.records.unshift(newRecord);
+        saveState();
+        document.getElementById('entryForm').reset();
+        document.getElementById('qty').value = 1;
+        document.getElementById('extraCost').value = 0;
+        updateLivePreview();
+        renderTable();
+    }
+
+    function deleteRecord(id) {
+        const current = appState.profiles[appState.currentProfile];
+        current.records = current.records.filter(r => r.id !== id);
+        saveState();
+        renderTable();
+    }
+
+    function saveRules() {
+        const current = appState.profiles[appState.currentProfile];
+        current.rules.minMargin = parseFloat(document.getElementById('ruleMinMargin').value) || 0;
+        current.rules.minProfit = parseFloat(document.getElementById('ruleMinProfit').value) || 0;
+        saveState();
+        updateLivePreview();
+        renderTable();
+    }
+
+    function renderTable() {
+        const current = appState.profiles[appState.currentProfile];
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const tbody = document.getElementById('dbTableBody');
+        tbody.innerHTML = '';
+
+        let sumCost = 0, sumRev = 0, sumProfit = 0, countWorth = 0, totalShown = 0;
+
+        current.records.forEach(r => {
+            const calc = evaluateOperation(r.buyCost, r.extraCost, r.sellRevenue, current.rules);
+            const searchable = `${r.product} ${r.client} ${calc.statusText}`.toLowerCase();
+            if (query && !searchable.includes(query)) return;
+
+            totalShown++;
+            sumCost += calc.totalCost;
+            sumRev += Number(r.sellRevenue);
+            sumProfit += calc.profit;
+            if (calc.worthIt) countWorth++;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${r.date}</td>
+                <td><strong>${r.product}</strong></td>
+                <td>${r.client}</td>
+                <td class="num">${r.qty}</td>
+                <td class="num" title="Compra: ${formatCurrency(r.buyCost)} + Logística: ${formatCurrency(r.extraCost)}">${formatCurrency(calc.totalCost)}</td>
+                <td class="num">${formatCurrency(r.sellRevenue)}</td>
+                <td class="num" style="font-weight:700; color:${calc.profit >= 0 ? '#166534' : '#991b1b'}">${formatCurrency(calc.profit)}</td>
+                <td class="num">${calc.margin.toFixed(1)}%</td>
+                <td><span class="badge ${calc.badgeClass}">${calc.statusText}</span></td>
+                <td class="num"><button class="btn btn-outline" style="padding:4px 8px;" onclick="deleteRecord(${r.id})">✕</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('kpiCost').textContent = formatCurrency(sumCost);
+        document.getElementById('kpiRevenue').textContent = formatCurrency(sumRev);
+        document.getElementById('kpiProfit').textContent = formatCurrency(sumProfit);
+        document.getElementById('kpiProfit').style.color = sumProfit >= 0 ? '#166534' : '#991b1b';
+        document.getElementById('kpiWorthIt').textContent = `${countWorth} de ${totalShown}`;
+    }
+
+    // Gestión de Perfiles / Distribuidores
+    function switchProfile(name) {
+        appState.currentProfile = name;
+        saveState();
+        initUI();
+    }
+
+    function createNewProfile() {
+        const name = prompt('Introduce el nombre de la empresa o distribuidor (ej. HORTOFRUTÍCOLA SUR SL):');
+        if (!name || !name.trim()) return;
+        const clean = name.trim().toUpperCase();
+        if (appState.profiles[clean]) {
+            alert('Ese perfil ya existe.');
+            return;
+        }
+        appState.profiles[clean] = { rules: { minMargin: 15, minProfit: 50 }, records: [] };
+        appState.currentProfile = clean;
+        saveState();
+        initUI();
+    }
+
+    function renameCurrentProfile() {
+        const oldName = appState.currentProfile;
+        const newName = prompt('Nuevo nombre para el perfil:', oldName);
+        if (!newName || !newName.trim() || newName.trim().toUpperCase() === oldName) return;
+        const clean = newName.trim().toUpperCase();
+        appState.profiles[clean] = appState.profiles[oldName];
+        delete appState.profiles[oldName];
+        appState.currentProfile = clean;
+        saveState();
+        initUI();
+    }
+
+    function deleteCurrentProfile() {
+        const keys = Object.keys(appState.profiles);
+        if (keys.length <= 1) {
+            alert('Debe existir al menos un perfil activo.');
+            return;
+        }
+        if (!confirm(`¿Seguro que deseas eliminar la base de datos de "${appState.currentProfile}"?`)) return;
+        delete appState.profiles[appState.currentProfile];
+        appState.currentProfile = Object.keys(appState.profiles)[0];
+        saveState();
+        initUI();
+    }
+
+    // Guardar y Cargar por Carpetas (.JSON y .CSV)
+    function exportProfileJSON() {
+        const name = appState.currentProfile;
+        const data = {
+            profileName: name,
+            exportedAt: new Date().toISOString(),
+            profileData: appState.profiles[name]
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `BD_${name.replace(/\s+/g, '_')}.json`;
+        a.click();
+    }
+
+    function importProfileJSON(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                if (imported.profileName && imported.profileData) {
+                    appState.profiles[imported.profileName] = imported.profileData;
+                    appState.currentProfile = imported.profileName;
+                    saveState();
+                    initUI();
+                    alert(`Base de datos "${imported.profileName}" cargada correctamente.`);
+                } else {
+                    alert('El archivo no tiene el formato correcto.');
+                }
+            } catch (err) {
+                alert('Error al leer el archivo JSON.');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    function exportCSV() {
+        const current = appState.profiles[appState.currentProfile];
+        let csv = 'Fecha;Producto;Cliente;Cantidad;Coste Compra;Logistica y Merma;Coste Total;Ingreso Venta;Beneficio Neto;Margen %;Evaluacion\n';
+        current.records.forEach(r => {
+            const c = evaluateOperation(r.buyCost, r.extraCost, r.sellRevenue, current.rules);
+            csv += `${r.date};"${r.product}";"${r.client}";${r.qty};${r.buyCost};${r.extraCost};${c.totalCost.toFixed(2)};${r.sellRevenue};${c.profit.toFixed(2)};${c.margin.toFixed(2)}%;"${c.statusText}"\n`;
+        });
+        const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `Rentabilidad_${appState.currentProfile.replace(/\s+/g, '_')}.csv`;
+        a.click();
+    }
+
+    initUI();
+</script>
+</body>
+</html> 
