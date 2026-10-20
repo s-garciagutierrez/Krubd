@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de Rentabilidad y Distribución</title>
+    <title>KRUDB - Gestor de Rentabilidad y Distribución</title>
     <style>
         :root {
-            --primary: #1e293b;
+            --primary: #0f172a;
+            --primary-light: #1e293b;
             --accent: #2563eb;
             --accent-hover: #1d4ed8;
-            --bg: #f8fafc;
+            --bg: #f1f5f9;
             --card: #ffffff;
             --text: #0f172a;
             --muted: #64748b;
@@ -23,25 +24,31 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 24px; line-height: 1.5; }
-        .container { max-width: 1250px; margin: 0 auto; }
+        body { background-color: var(--bg); color: var(--text); padding: 28px 0; line-height: 1.6; }
+        
+        .container { 
+            width: 96%; 
+            max-width: 1600px; 
+            margin: 0 auto; 
+        }
 
-        /* Cabecera y Selector de Perfiles / Carpetas */
+        /* Cabecera y Selector de Perfiles / Vistas */
         header {
-            background: var(--primary);
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
-            padding: 20px 24px;
-            border-radius: 12px;
+            padding: 24px 30px;
+            border-radius: 16px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 16px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            gap: 20px;
+            margin-bottom: 28px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
         }
-        .brand h1 { font-size: 1.35rem; font-weight: 700; }
-        .brand p { font-size: 0.85rem; color: #94a3b8; }
+        .brand h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; }
+        .brand p { font-size: 0.9rem; color: #94a3b8; margin-top: 4px; }
 
         .profile-bar {
             display: flex;
@@ -50,89 +57,111 @@
             gap: 10px;
         }
         .profile-bar select, .profile-bar button {
-            padding: 8px 12px;
-            border-radius: 6px;
-            border: 1px solid #475569;
-            font-size: 0.9rem;
+            padding: 9px 14px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            font-size: 0.88rem;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .profile-bar select { background: #0f172a; color: white; font-weight: 600; min-width: 220px; }
+        .profile-bar select { background: #1e293b; color: white; font-weight: 600; outline: none; }
+        .profile-bar select:hover, .profile-bar button:hover { border-color: #64748b; }
+        
         .btn {
             background: var(--accent);
             color: white;
             border: none;
-            padding: 9px 14px;
-            border-radius: 6px;
+            padding: 10px 16px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.15s;
-            font-size: 0.85rem;
+            transition: background 0.2s, transform 0.1s;
+            font-size: 0.88rem;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
         }
-        .btn:hover { background: var(--accent-hover); }
+        .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
         .btn-secondary { background: #334155; color: white; border: none; }
         .btn-secondary:hover { background: #475569; }
-        .btn-outline { background: white; color: var(--text); border: 1px solid var(--border); }
-        .btn-outline:hover { background: #f1f5f9; }
+        .btn-outline { background: white; color: var(--text); border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .btn-outline:hover { background: #f8fafc; border-color: #cbd5e1; }
         .btn-danger { background: #ef4444; color: white; }
         .btn-danger:hover { background: #dc2626; }
+        .btn-warning { background: #d97706; color: white; }
+        .btn-warning:hover { background: #b45309; }
+        .btn-active { background: #1d4ed8 !important; border-color: #93c5fd !important; box-shadow: 0 0 0 2px rgba(255,255,255,0.3); }
 
         /* Tarjetas de Resumen (KPIs) */
         .kpi-grid {
+            width: 100%;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
         }
         .kpi-card {
             background: var(--card);
-            padding: 18px;
-            border-radius: 10px;
+            padding: 22px;
+            border-radius: 14px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -2px rgba(0,0,0,0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .kpi-title { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; }
-        .kpi-value { font-size: 1.65rem; font-weight: 700; margin-top: 6px; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        .kpi-title { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
+        .kpi-value { font-size: 1.8rem; font-weight: 800; margin-top: 8px; color: var(--primary); }
 
         /* Paneles Principales */
         .main-grid {
+            width: 100%;
             display: grid;
-            grid-template-columns: 360px 1fr;
+            grid-template-columns: 400px minmax(0, 1fr);
             gap: 24px;
             align-items: start;
         }
-        @media (max-width: 960px) { .main-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
 
         .card {
             background: var(--card);
-            padding: 20px;
-            border-radius: 10px;
+            padding: 24px;
+            border-radius: 14px;
             border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            margin-bottom: 24px;
+            width: 100%;
         }
-        .card h2 { font-size: 1.05rem; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .card h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); color: var(--primary); }
 
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; color: #334155; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #334155; }
         .form-group input, .form-group select {
             width: 100%;
-            padding: 9px 11px;
+            padding: 10px 14px;
             border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            font-size: 0.92rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fff;
         }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         /* Vista previa en tiempo real */
         .live-preview {
-            background: #f1f5f9;
-            padding: 14px;
-            border-radius: 8px;
-            margin: 14px 0;
-            border-left: 4px solid var(--accent);
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 18px 0;
+            border-left: 5px solid var(--accent);
+            border: 1px solid #e2e8f0;
+            border-left-width: 5px;
         }
-        .live-preview-row { display: flex; justify-content: space-between; font-size: 0.88rem; margin-bottom: 6px; }
-        .live-preview-row strong { font-size: 0.98rem; }
+        .live-preview-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 8px; color: #475569; }
+        .live-preview-row strong { font-size: 1rem; color: var(--primary); }
 
         /* Tabla de Base de Datos */
         .toolbar {
@@ -140,30 +169,36 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
+            gap: 16px;
+            margin-bottom: 18px;
         }
         .search-input {
-            padding: 8px 12px;
+            padding: 9px 14px;
             border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            min-width: 250px;
+            border-radius: 8px;
+            min-width: 200px;
             font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s;
         }
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-        th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: #f8fafc; font-weight: 600; color: #475569; white-space: nowrap; }
+        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
+        
+        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); width: 100%; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; background: white; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #f8fafc; font-weight: 700; color: #334155; white-space: nowrap; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; }
+        tr:last-child td { border-bottom: none; }
         tr:hover { background: #f8fafc; }
         .num { text-align: right; font-variant-numeric: tabular-nums; }
 
         /* Etiquetas de Evaluación */
         .badge {
-            display: inline-block;
-            padding: 4px 10px;
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 10px;
             border-radius: 999px;
-            font-weight: 600;
-            font-size: 0.78rem;
+            font-weight: 700;
+            font-size: 0.75rem;
             white-space: nowrap;
         }
         .badge-success { background: var(--success-bg); color: var(--success-text); }
@@ -171,207 +206,681 @@
         .badge-danger { background: var(--danger-bg); color: var(--danger-text); }
 
         .folder-bar {
+            width: 100%;
             background: #eff6ff;
             border: 1px solid #bfdbfe;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 28px;
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
+            gap: 16px;
+            font-size: 0.88rem;
             color: #1e3a8a;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
-        .folder-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+        .folder-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        /* Control de Secciones (Vistas) */
+        .view-section { display: none; width: 100%; }
+        .view-section.active { display: block; }
+
+        /* Filtros */
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: #334155;
+            cursor: pointer;
+        }
+        
+        #advancedFilterPanel {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .adv-filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        .adv-filter-grid label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+        .adv-filter-grid input, .adv-filter-grid select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.88rem;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- CABECERA Y SELECTOR DE EMPRESA/PERFIL -->
+    <!-- CABECERA Y NAVEGACIÓN -->
     <header>
         <div class="brand">
-            <h1 id="headerCompanyTitle">📦 Base de Datos de Distribución</h1>
-            <p>Cálculo automático de beneficios y evaluación de viabilidad comercial</p>
+            <h1 id="headerCompanyTitle">KRUDB</h1>
+            <p id="txtHeaderSubtitle">Cálculo automático de beneficios y evaluación de viabilidad comercial</p>
         </div>
         <div class="profile-bar">
-            <label for="profileSelect" style="font-size:0.85rem; color:#cbd5e1;">Perfil / Distribuidor:</label>
+            <button class="btn btn-secondary btn-active" id="navDbBtn" onclick="switchView('db')">📋 BD</button>
+            <button class="btn btn-secondary" id="navStatsBtn" onclick="switchView('stats')">📈 Estadísticas</button>
+
+            <select id="langSelect" onchange="switchLanguage(this.value)" title="Idioma / Language">
+                <option value="es">🇪🇸 ES</option>
+                <option value="fr">🇫🇷 FR</option>
+                <option value="en">🇬🇧 EN</option>
+                <option value="de">🇩🇪 DE</option>
+            </select>
+
             <select id="profileSelect" onchange="switchProfile(this.value)"></select>
-            <button class="btn" onclick="createNewProfile()">+ Nuevo Distribuidor</button>
-            <button class="btn btn-secondary" onclick="renameCurrentProfile()">✏️ Renombrar</button>
+            <button class="btn" id="btnNewProfile" onclick="createNewProfile()">+ Nuevo</button>
+            <button class="btn btn-secondary" id="btnRename" onclick="renameCurrentProfile()">✏️</button>
             <button class="btn btn-danger" onclick="deleteCurrentProfile()">🗑️</button>
         </div>
     </header>
 
-    <!-- BARRA DE TRABAJO POR CARPETAS -->
-    <div class="folder-bar">
-        <div>
-            <strong>📁 Modo Carpetas Independientes:</strong> Puedes guardar la base de datos de este distribuidor en su propia carpeta del PC o abrir el archivo de otro cliente.
-        </div>
-        <div class="folder-actions">
-            <button class="btn btn-outline" onclick="exportProfileJSON()">💾 Guardar BD en Carpeta (.json)</button>
-            <button class="btn btn-outline" onclick="document.getElementById('fileInput').click()">📂 Cargar BD desde Carpeta (.json)</button>
-            <button class="btn btn-outline" onclick="exportCSV()">📊 Exportar a Excel (.csv)</button>
-            <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importProfileJSON(event)">
-        </div>
-    </div>
-
-    <!-- TARJETAS DE RESUMEN (KPIs) -->
-    <div class="kpi-grid">
-        <div class="kpi-card">
-            <div class="kpi-title">Coste Total Acumulado</div>
-            <div class="kpi-value" id="kpiCost">0,00 €</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-title">Ingresos Totales</div>
-            <div class="kpi-value" id="kpiRevenue">0,00 €</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-title">Beneficio Neto Total (3er Dato)</div>
-            <div class="kpi-value" id="kpiProfit">0,00 €</div>
-        </div>
-        <div class="kpi-card">
-            <div class="kpi-title">Operaciones que "Valen la pena"</div>
-            <div class="kpi-value" id="kpiWorthIt">0 / 0</div>
-        </div>
-    </div>
-
-    <div class="main-grid">
-        <!-- COLUMNA IZQUIERDA: ENTRADA MANUAL Y REGLAS -->
-        <div>
-            <div class="card">
-                <h2>➕ Introducir Operación / Lote</h2>
-                <form id="entryForm" onsubmit="addRecord(event)">
-                    <div class="form-group">
-                        <label>Producto / Lote (ej. Palet Naranja, Aguacate Hass)</label>
-                        <input type="text" id="prodName" placeholder="Nombre de la mercancía..." required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Cliente / Destino</label>
-                            <input type="text" id="clientName" placeholder="Ej. Mercalicante / Supermercado">
-                        </div>
-                        <div class="form-group">
-                            <label>Cantidad (Kg / Cajas)</label>
-                            <input type="number" id="qty" step="any" min="0.01" value="1" oninput="updateLivePreview()" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Coste Compra Total (€)</label>
-                            <input type="number" id="buyCost" step="0.01" min="0" placeholder="0.00" oninput="updateLivePreview()" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Logística / Merma (€)</label>
-                            <input type="number" id="extraCost" step="0.01" min="0" value="0" oninput="updateLivePreview()" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Ingreso Total de Venta (€)</label>
-                        <input type="number" id="sellRevenue" step="0.01" min="0" placeholder="0.00" oninput="updateLivePreview()" required>
-                    </div>
-
-                    <!-- VISTA PREVIA AUTOMÁTICA -->
-                    <div class="live-preview">
-                        <div class="live-preview-row">
-                            <span>Coste Total (Compra + Logística):</span>
-                            <strong id="prevTotalCost">0,00 €</strong>
-                        </div>
-                        <div class="live-preview-row">
-                            <span>Beneficio Neto (Automático):</span>
-                            <strong id="prevProfit">0,00 €</strong>
-                        </div>
-                        <div class="live-preview-row">
-                            <span>Margen sobre coste:</span>
-                            <strong id="prevMargin">0,0 %</strong>
-                        </div>
-                        <div class="live-preview-row" style="margin-top:8px; padding-top:8px; border-top:1px solid #cbd5e1;">
-                            <span>Dictamen:</span>
-                            <span id="prevVerdict"><span class="badge badge-warn">Introduce datos</span></span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn" style="width:100%; padding:11px;">Guardar en Base de Datos</button>
-                </form>
+    <!-- SECCIÓN 1: BASE DE DATOS -->
+    <div id="sectionDb" class="view-section active">
+        <div class="folder-bar">
+            <div id="txtFolderBar">
+                <strong>📁 Modo Carpetas Independientes:</strong> Guarda o carga los datos de este distribuidor en formato JSON o exporta a Excel.
             </div>
+            <div class="folder-actions">
+                <button class="btn btn-outline" id="btnSaveJSON" onclick="exportProfileJSON()">💾 Guardar BD (.json)</button>
+                <button class="btn btn-outline" id="btnLoadJSON" onclick="document.getElementById('fileInput').click()">📂 Cargar BD (.json)</button>
+                <button class="btn btn-outline" id="btnExportCSV" onclick="exportCSV()">📊 Exportar Excel (.csv)</button>
+                <input type="file" id="fileInput" accept=".json" style="display:none" onchange="importProfileJSON(event)">
+            </div>
+        </div>
 
-            <!-- CRITERIOS DE RENTABILIDAD PERSONALIZABLES POR DISTRIBUIDOR -->
-            <div class="card">
-                <h2>⚙️ Criterio: ¿Cuándo vale la pena?</h2>
-                <p style="font-size:0.8rem; color:var(--muted); margin-bottom:12px;">
-                    Ajusta las reglas para este distribuidor. La tabla se recalculará automáticamente al instante.
-                </p>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Margen Mínimo (%)</label>
-                        <input type="number" id="ruleMinMargin" step="0.5" value="15" oninput="saveRules()">
-                    </div>
-                    <div class="form-group">
-                        <label>Beneficio Mínimo (€)</label>
-                        <input type="number" id="ruleMinProfit" step="1" value="50" oninput="saveRules()">
+        <!-- TARJETAS DE RESUMEN (KPIs) -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpiTitleCost">Coste Total Acumulado</div>
+                <div class="kpi-value" id="kpiCost">0,00 €</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpiTitleRev">Ingresos Totales</div>
+                <div class="kpi-value" id="kpiRevenue">0,00 €</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpiTitleProfit">Beneficio Neto Total</div>
+                <div class="kpi-value" id="kpiProfit">0,00 €</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title" id="kpiTitleWorth">Operaciones Rentables</div>
+                <div class="kpi-value" id="kpiWorthIt">0 / 0</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- COLUMNA IZQUIERDA: FORMULARIO Y REGLAS -->
+            <div>
+                <div class="card">
+                    <h2 id="formTitle">➕ Introducir Operación / Lote</h2>
+                    <form id="entryForm" onsubmit="saveRecord(event)">
+                        <input type="hidden" id="editRecordId" value="">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="lblProd">Producto / Lote</label>
+                                <input type="text" id="prodName" placeholder="Ej. Palet Naranja" required>
+                            </div>
+                            <div class="form-group">
+                                <label id="lblType">Tipo / Grupo</label>
+                                <input type="text" id="prodType" placeholder="Ej. Fruta, Verdura..." required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="lblBatch">Nº de Lote <span style="font-weight:normal; color:var(--muted);" id="lblBatchOpt">(Opc.)</span></label>
+                                <input type="text" id="batchNo" placeholder="Ej. L-4092">
+                            </div>
+                            <div class="form-group">
+                                <label id="lblExpiry">Consumición Rec. <span style="font-weight:normal; color:var(--muted);" id="lblExpiryOpt">(Opc.)</span></label>
+                                <input type="date" id="expiryDate">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="lblClient">Cliente / Destino</label>
+                                <input type="text" id="clientName" placeholder="Ej. Supermercado">
+                            </div>
+                            <div class="form-group">
+                                <label id="lblQty">Cantidad (Kg / Cajas)</label>
+                                <input type="number" id="qty" step="any" min="0.01" value="1" oninput="updateLivePreview()" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label id="lblBuyCost">Coste Compra Total (€)</label>
+                                <input type="number" id="buyCost" step="0.01" min="0" placeholder="0.00" oninput="updateLivePreview()" required>
+                            </div>
+                            <div class="form-group">
+                                <label id="lblLogistics">Logística / Merma (€)</label>
+                                <input type="number" id="extraCost" step="0.01" min="0" value="0" oninput="updateLivePreview()" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><span id="lblOther">Otros gastos (€)</span></label>
+                                <input type="number" id="otherCost" step="0.01" min="0" value="0" oninput="updateLivePreview()" required>
+                            </div>
+                            <div class="form-group">
+                                <label id="lblRevenue">Ingreso Total Venta (€)</label>
+                                <input type="number" id="sellRevenue" step="0.01" min="0" placeholder="0.00" oninput="updateLivePreview()" required>
+                            </div>
+                        </div>
+
+                        <!-- VISTA PREVIA AUTOMÁTICA -->
+                        <div class="live-preview">
+                            <div class="live-preview-row">
+                                <span id="prevCostLabel">Coste Total:</span>
+                                <strong id="prevTotalCost">0,00 €</strong>
+                            </div>
+                            <div class="live-preview-row">
+                                <span id="prevProfitLabel">Beneficio Neto:</span>
+                                <strong id="prevProfit">0,00 €</strong>
+                            </div>
+                            <div class="live-preview-row">
+                                <span id="prevMarginLabel">Margen sobre coste:</span>
+                                <strong id="prevMargin">0,0 %</strong>
+                            </div>
+                            <div class="live-preview-row" style="margin-top:8px; padding-top:8px; border-top:1px solid #cbd5e1;">
+                                <span id="prevVerdictLabel">Dictamen:</span>
+                                <span id="prevVerdict"><span class="badge badge-warn" id="prevWaitText">Introduce datos</span></span>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn" id="btnSubmit" style="flex: 1; padding: 12px;">Guardar en Base de Datos</button>
+                            <button type="button" class="btn btn-secondary" id="btnCancelEdit" onclick="cancelEdit()" style="display:none; padding: 12px;">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- CRITERIOS DE RENTABILIDAD -->
+                <div class="card">
+                    <h2 id="rulesTitle">⚙️ Criterios de Viabilidad</h2>
+                    <p style="font-size:0.82rem; color:var(--muted); margin-bottom:14px;" id="rulesDesc">
+                        Ajusta los mínimos para evaluar si las operaciones compensan.
+                    </p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label id="lblMinMargin">Margen Mínimo (%)</label>
+                            <input type="number" id="ruleMinMargin" step="0.5" value="0" oninput="saveRules()">
+                        </div>
+                        <div class="form-group">
+                            <label id="lblMinProfit">Beneficio Mínimo (€)</label>
+                            <input type="number" id="ruleMinProfit" step="1" value="0" oninput="saveRules()">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- COLUMNA DERECHA: TABLA DE LA BASE DE DATOS -->
+            <!-- COLUMNA DERECHA: TABLA -->
+            <div class="card">
+                <div class="toolbar" style="margin-bottom: 10px;">
+                    <h2 style="border:none; margin:0; padding:0;" id="tableTitle">📋 Registros del Perfil</h2>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Búsqueda rápida..." oninput="renderTable()">
+                        
+                        <select id="sortSelect" class="search-input" style="min-width: 160px; font-weight: 600;" onchange="renderTable()">
+                            <option value="date_desc">📅 Más recientes</option>
+                            <option value="date_asc">📅 Más antiguos</option>
+                            <option value="profit_desc">💰 Beneficio (Mayor a menor)</option>
+                            <option value="profit_asc">💰 Beneficio (Menor a mayor)</option>
+                            <option value="rev_desc">📈 Ingresos (Mayor a menor)</option>
+                            <option value="rev_asc">📈 Ingresos (Menor a mayor)</option>
+                            <option value="cost_desc">📉 Coste (Mayor a menor)</option>
+                            <option value="cost_asc">📉 Coste (Menor a mayor)</option>
+                            <option value="qty_desc">📦 Cantidad (Mayor a menor)</option>
+                            <option value="qty_asc">📦 Cantidad (Menor a mayor)</option>
+                            <option value="expiry_asc">⏳ Consumición (Más pronto)</option>
+                            <option value="expiry_desc">⏳ Consumición (Más tarde)</option>
+                            <option value="viability_desc">✅ Viabilidad (Más a menos)</option>
+                            <option value="viability_asc">❌ Viabilidad (Menos a más)</option>
+                        </select>
+
+                        <button class="btn btn-secondary" onclick="toggleAdvancedFilters()">⚙️ Filtrar</button>
+                    </div>
+                </div>
+
+                <!-- PANEL DE FILTROS AVANZADOS -->
+                <div id="advancedFilterPanel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <strong style="color: var(--primary);">Filtros Avanzados</strong>
+                        <button class="btn btn-outline" style="padding: 4px 8px; font-size: 0.75rem;" onclick="clearFilters()">Limpiar Filtros</button>
+                    </div>
+                    <div class="adv-filter-grid">
+                        <div><label>Fecha Exacta</label><input type="date" id="fDate" oninput="renderTable()"></div>
+                        <div><label>Lote</label><input type="text" id="fBatch" placeholder="Buscar lote..." oninput="renderTable()"></div>
+                        <div><label>Tipo</label><input type="text" id="fType" placeholder="Buscar tipo..." oninput="renderTable()"></div>
+                        <div><label>Producto</label><input type="text" id="fProd" placeholder="Buscar producto..." oninput="renderTable()"></div>
+                        <div><label>Cliente</label><input type="text" id="fClient" placeholder="Buscar cliente..." oninput="renderTable()"></div>
+                        <div><label>Consumición Exacta</label><input type="date" id="fExp" oninput="renderTable()"></div>
+                        <div><label>Cantidad (Mínimo)</label><input type="number" id="fQty" placeholder="0" oninput="renderTable()"></div>
+                        <div><label>Coste Total (Mínimo)</label><input type="number" id="fCost" placeholder="0.00" oninput="renderTable()"></div>
+                        <div><label>Ingreso (Mínimo)</label><input type="number" id="fRev" placeholder="0.00" oninput="renderTable()"></div>
+                        <div><label>Beneficio (Mínimo)</label><input type="number" id="fProfit" placeholder="0.00" oninput="renderTable()"></div>
+                        <div><label>Margen % (Mínimo)</label><input type="number" id="fMargin" placeholder="0.0" oninput="renderTable()"></div>
+                        <div>
+                            <label>Viabilidad</label>
+                            <select id="fViability" onchange="renderTable()">
+                                <option value="all">Todas</option>
+                                <option value="ok">✅ Rentable</option>
+                                <option value="warn">⚠️ Margen Bajo</option>
+                                <option value="loss">❌ Pérdida</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th id="thDate">Fecha</th>
+                                <th id="thBatch">Lote</th>
+                                <th id="thType">Tipo</th>
+                                <th id="thProd">Producto</th>
+                                <th id="thExpiry">Consumición</th>
+                                <th id="thClient">Cliente</th>
+                                <th class="num" id="thQty">Cant.</th>
+                                <th class="num" id="thCost">Coste Total</th>
+                                <th class="num" id="thRev">Ingreso Venta</th>
+                                <th class="num" id="thProfit">Beneficio</th>
+                                <th class="num" id="thMargin">Margen</th>
+                                <th id="thWorth">Viabilidad</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 2: ESTADÍSTICAS Y GRÁFICOS -->
+    <div id="sectionStats" class="view-section">
         <div class="card">
             <div class="toolbar">
-                <h2 style="border:none; margin:0; padding:0;">📋 Registros del Distribuidor</h2>
-                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar producto, cliente o estado..." oninput="renderTable()">
+                <h2 style="border:none; margin:0; padding:0;" id="chartTitle">📈 Evolución Temporal y Comparativa de Beneficios</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label for="timeScaleSelect" id="lblScale" style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">Agrupar por:</label>
+                    <select id="timeScaleSelect" onchange="renderChart()" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-size: 0.88rem; background: white; font-weight: 600; outline: none;">
+                        <option value="year" id="optYear">Año</option>
+                        <option value="month" id="optMonth">Mes</option>
+                        <option value="week" id="optWeek">Semana</option>
+                        <option value="day" id="optDay" selected>Día</option>
+                        <option value="hour" id="optHour">Hora</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-container" id="typeFilters">
+                <!-- Filtros generados dinámicamente -->
             </div>
 
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Producto / Lote</th>
-                            <th>Cliente</th>
-                            <th class="num">Cant.</th>
-                            <th class="num">Coste Total</th>
-                            <th class="num">Ingreso Venta</th>
-                            <th class="num">Beneficio (Auto)</th>
-                            <th class="num">Margen</th>
-                            <th>¿Vale la pena?</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="dbTableBody"></tbody>
-                </table>
+            <div class="kpi-grid" style="margin-bottom: 20px;">
+                <div class="kpi-card">
+                    <div class="kpi-title" id="lblStatsCost">Coste Total (Seleccionados)</div>
+                    <div class="kpi-value" id="statsTotalCost">0,00 €</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-title" id="lblStatsProfit">Beneficio Neto (Seleccionados)</div>
+                    <div class="kpi-value" id="statsTotalProfit">0,00 €</div>
+                </div>
+            </div>
+
+            <div id="chartContainer" style="padding: 20px 0; min-height: 320px; display: flex; flex-direction: column; justify-content: flex-end;">
+                <!-- Gráfico dinámico -->
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const STORAGE_KEY = 'db_distribucion_multiperfil_v1';
+    const translations = {
+        es: {
+            subtitle: "Cálculo automático de beneficios y evaluación de viabilidad comercial",
+            folderText: "📁 Modo Carpetas Independientes: Guarda o carga los datos de este distribuidor en formato JSON o exporta a Excel.",
+            btnSave: "💾 Guardar BD (.json)",
+            btnLoad: "📂 Cargar BD (.json)",
+            btnExport: "📊 Exportar Excel (.csv)",
+            btnNew: "+ Nuevo",
+            kpiCost: "Coste Total Acumulado",
+            kpiRev: "Ingresos Totales",
+            kpiProfit: "Beneficio Neto Total",
+            kpiWorth: "Operaciones Rentables",
+            formTitleAdd: "➕ Introducir Operación / Lote",
+            formTitleEdit: "✏️ Editar Operación / Lote",
+            lblProd: "Producto / Lote",
+            prodPlace: "Ej. Palet Naranja",
+            lblType: "Tipo / Grupo",
+            typePlace: "Ej. Fruta, Verdura...",
+            lblBatch: "Nº de Lote",
+            lblBatchOpt: "(Opc.)",
+            lblExpiry: "Consumición Rec.",
+            lblExpiryOpt: "(Opc.)",
+            lblClient: "Cliente / Destino",
+            lblQty: "Cantidad (Kg / Cajas)",
+            lblBuyCost: "Coste Compra Total (€)",
+            lblLogistics: "Logística / Merma (€)",
+            lblOther: "Otros gastos (€)",
+            lblRevenue: "Ingreso Total Venta (€)",
+            prevCost: "Coste Total:",
+            prevProfit: "Beneficio Neto:",
+            prevMargin: "Margen sobre coste:",
+            prevVerdict: "Dictamen:",
+            prevWait: "Introduce datos",
+            btnSubmitAdd: "Guardar en Base de Datos",
+            btnSubmitEdit: "Actualizar Registro",
+            btnCancel: "Cancelar",
+            rulesTitle: "⚙️ Criterios de Viabilidad",
+            rulesDesc: "Ajusta los mínimos para evaluar si las operaciones compensan.",
+            lblMinMargin: "Margen Mínimo (%)",
+            lblMinProfit: "Beneficio Mínimo (€)",
+            tableTitle: "📋 Registros del Perfil",
+            searchPlace: "🔍 Búsqueda rápida...",
+            thDate: "Fecha",
+            thBatch: "Lote",
+            thType: "Tipo",
+            thProd: "Producto",
+            thExpiry: "Consumición",
+            thClient: "Cliente",
+            thQty: "Cant.",
+            thCost: "Coste Total",
+            thRev: "Ingreso Venta",
+            thProfit: "Beneficio",
+            thMargin: "Margen",
+            thWorth: "Viabilidad",
+            statusLoss: "❌ No compensa (Pérdida)",
+            statusOk: "✅ Rentable",
+            statusWarn: "⚠️ Margen bajo",
+            profilePrompt: "Introduce el nombre de la empresa o distribuidor:",
+            renamePrompt: "Nuevo nombre para el perfil:",
+            confirmDel: "¿Seguro que deseas eliminar la base de datos de",
+            generalClient: "General",
+            chartTitle: "📈 Evolución Temporal y Comparativa de Beneficios",
+            lblScale: "Agrupar por:",
+            optYear: "Año",
+            optMonth: "Mes",
+            optWeek: "Semana",
+            optDay: "Día",
+            optHour: "Hora",
+            emptyChart: "No hay registros disponibles para mostrar la comparativa gráfica.",
+            navDb: "📋 BD",
+            navStats: "📈 Estadísticas",
+            lblStatsCost: "Coste Total (Seleccionados)",
+            lblStatsProfit: "Beneficio Neto (Seleccionados)",
+            filterTypes: "Filtrar por Tipo:"
+        },
+        fr: {
+            subtitle: "Calcul automatique des bénéfices et évaluation de la viabilité",
+            folderText: "📁 Mode Dossiers : Enregistrez ou chargez les données au format JSON ou exportez vers Excel.",
+            btnSave: "💾 Sauvegarder (.json)",
+            btnLoad: "📂 Charger (.json)",
+            btnExport: "📊 Exporter Excel (.csv)",
+            btnNew: "+ Nouveau",
+            kpiCost: "Coût Total Cumulé",
+            kpiRev: "Revenus Totaux",
+            kpiProfit: "Bénéfice Net Total",
+            kpiWorth: "Opérations Rentables",
+            formTitleAdd: "➕ Saisir Opération / Lot",
+            formTitleEdit: "✏️ Modifier Opération / Lot",
+            lblProd: "Produit / Lot",
+            prodPlace: "Ex. Palette Orange",
+            lblType: "Type / Groupe",
+            typePlace: "Ex. Fruit, Légume...",
+            lblBatch: "N° de Lot",
+            lblBatchOpt: "(Fac.)",
+            lblExpiry: "Consommation Rec.",
+            lblExpiryOpt: "(Fac.)",
+            lblClient: "Client / Destination",
+            lblQty: "Quantité",
+            lblBuyCost: "Coût d'Achat Total (€)",
+            lblLogistics: "Logistique / Perte (€)",
+            lblOther: "Autres frais (€)",
+            lblRevenue: "Revenu Total Vente (€)",
+            prevCost: "Coût Total:",
+            prevProfit: "Bénéfice Net:",
+            prevMargin: "Marge sur coût:",
+            prevVerdict: "Avis:",
+            prevWait: "Saisir des données",
+            btnSubmitAdd: "Enregistrer",
+            btnSubmitEdit: "Mettre à jour",
+            btnCancel: "Annuler",
+            rulesTitle: "⚙️ Critères de Viabilité",
+            rulesDesc: "Ajustez les minimums pour évaluer la rentabilité.",
+            lblMinMargin: "Marge Minimum (%)",
+            lblMinProfit: "Bénéfice Minimum (€)",
+            tableTitle: "📋 Registres du Profil",
+            searchPlace: "🔍 Recherche rapide...",
+            thDate: "Date",
+            thBatch: "Lot",
+            thType: "Type",
+            thProd: "Produit",
+            thExpiry: "Consommation",
+            thClient: "Client",
+            thQty: "Qté",
+            thCost: "Coût Total",
+            thRev: "Revenu Vente",
+            thProfit: "Bénéfice",
+            thMargin: "Marge",
+            thWorth: "Viabilité",
+            statusLoss: "❌ Non rentable",
+            statusOk: "✅ Rentable",
+            statusWarn: "⚠️ Marge faible",
+            profilePrompt: "Entrez le nom de l'entreprise :",
+            renamePrompt: "Nouveau nom pour le profil :",
+            confirmDel: "Voulez-vous vraiment supprimer la base de données de",
+            generalClient: "Général",
+            chartTitle: "📈 Évolution Temporelle et Comparaison",
+            lblScale: "Regrouper par :",
+            optYear: "Année",
+            optMonth: "Mois",
+            optWeek: "Semaine",
+            optDay: "Jour",
+            optHour: "Heure",
+            emptyChart: "Aucun enregistrement disponible.",
+            navDb: "📋 BD",
+            navStats: "📈 Statistiques",
+            lblStatsCost: "Coût Total (Sélection)",
+            lblStatsProfit: "Bénéfice Net (Sélection)",
+            filterTypes: "Filtrer par Type:"
+        },
+        en: {
+            subtitle: "Automatic profit calculation and commercial viability assessment",
+            folderText: "📁 Independent Folders Mode: Save or load distributor data in JSON format or export to Excel.",
+            btnSave: "💾 Save DB (.json)",
+            btnLoad: "📂 Load DB (.json)",
+            btnExport: "📊 Export Excel (.csv)",
+            btnNew: "+ New",
+            kpiCost: "Total Accumulated Cost",
+            kpiRev: "Total Revenue",
+            kpiProfit: "Total Net Profit",
+            kpiWorth: "Profitable Operations",
+            formTitleAdd: "➕ Add Operation / Batch",
+            formTitleEdit: "✏️ Edit Operation / Batch",
+            lblProd: "Product / Batch",
+            prodPlace: "E.g., Orange Pallet",
+            lblType: "Type / Group",
+            typePlace: "E.g., Fruit, Vegetable...",
+            lblBatch: "Batch No.",
+            lblBatchOpt: "(Opt.)",
+            lblExpiry: "Rec. Expiry",
+            lblExpiryOpt: "(Opt.)",
+            lblClient: "Client / Destination",
+            lblQty: "Quantity",
+            lblBuyCost: "Total Purchase Cost (€)",
+            lblLogistics: "Logistics / Waste (€)",
+            lblOther: "Other Expenses (€)",
+            lblRevenue: "Total Sales Revenue (€)",
+            prevCost: "Total Cost:",
+            prevProfit: "Net Profit:",
+            prevMargin: "Margin over cost:",
+            prevVerdict: "Verdict:",
+            prevWait: "Enter data",
+            btnSubmitAdd: "Save to Database",
+            btnSubmitEdit: "Update Record",
+            btnCancel: "Cancel",
+            rulesTitle: "⚙️ Viability Criteria",
+            rulesDesc: "Adjust minimum requirements to evaluate performance.",
+            lblMinMargin: "Minimum Margin (%)",
+            lblMinProfit: "Minimum Profit (€)",
+            tableTitle: "📋 Profile Records",
+            searchPlace: "🔍 Quick search...",
+            thDate: "Date",
+            thBatch: "Batch",
+            thType: "Type",
+            thProd: "Product",
+            thExpiry: "Expiry",
+            thClient: "Client",
+            thQty: "Qty",
+            thCost: "Total Cost",
+            thRev: "Sales Revenue",
+            thProfit: "Profit",
+            thMargin: "Margin",
+            thWorth: "Viability",
+            statusLoss: "❌ Not worth it (Loss)",
+            statusOk: "✅ Profitable",
+            statusWarn: "⚠️ Low margin",
+            profilePrompt: "Enter the name of the company or distributor:",
+            renamePrompt: "New name for the profile:",
+            confirmDel: "Are you sure you want to delete the database for",
+            generalClient: "General",
+            chartTitle: "📈 Time Evolution and Profit Comparison",
+            lblScale: "Group by:",
+            optYear: "Year",
+            optMonth: "Month",
+            optWeek: "Week",
+            optDay: "Day",
+            optHour: "Hour",
+            emptyChart: "No records available.",
+            navDb: "📋 DB",
+            navStats: "📈 Statistics",
+            lblStatsCost: "Total Cost (Selected)",
+            lblStatsProfit: "Net Profit (Selected)",
+            filterTypes: "Filter by Type:"
+        },
+        de: {
+            subtitle: "Automatische Gewinnberechnung und kommerzielle Machbarkeitsprüfung",
+            folderText: "📁 Unabhängiger Ordner-Modus: Speichern oder laden Sie Daten im JSON-Format oder exportieren Sie nach Excel.",
+            btnSave: "💾 DB Speichern (.json)",
+            btnLoad: "📂 DB Laden (.json)",
+            btnExport: "📊 Excel Exportieren (.csv)",
+            btnNew: "+ Neu",
+            kpiCost: "Gesamtkosten",
+            kpiRev: "Gesamteinnahmen",
+            kpiProfit: "Nettogewinn",
+            kpiWorth: "Rentable Vorgänge",
+            formTitleAdd: "➕ Vorgang / Charge hinzufügen",
+            formTitleEdit: "✏️ Vorgang bearbeiten",
+            lblProd: "Produkt / Charge",
+            prodPlace: "Z. B. Orangen",
+            lblType: "Typ / Gruppe",
+            typePlace: "Z.B. Obst, Gemüse...",
+            lblBatch: "Chargen-Nr.",
+            lblBatchOpt: "(Opt.)",
+            lblExpiry: "Empf. Verfall",
+            lblExpiryOpt: "(Opt.)",
+            lblClient: "Kunde / Ziel",
+            lblQty: "Menge",
+            lblBuyCost: "Gesamtkaufkosten (€)",
+            lblLogistics: "Logistik / Schwund (€)",
+            lblOther: "Sonstige Kosten (€)",
+            lblRevenue: "Gesamtverkaufserlös (€)",
+            prevCost: "Gesamtkosten:",
+            prevProfit: "Nettogewinn:",
+            prevMargin: "Marge:",
+            prevVerdict: "Beurteilung:",
+            prevWait: "Daten eingeben",
+            btnSubmitAdd: "Speichern",
+            btnSubmitEdit: "Aktualisieren",
+            btnCancel: "Abbrechen",
+            rulesTitle: "⚙️ Rentabilitätskriterien",
+            rulesDesc: "Passen Sie die Mindestanforderungen an.",
+            lblMinMargin: "Mindestmarge (%)",
+            lblMinProfit: "Mindestgewinn (€)",
+            tableTitle: "📋 Profil-Datensätze",
+            searchPlace: "🔍 Schnelle Suche...",
+            thDate: "Datum",
+            thBatch: "Charge",
+            thType: "Typ",
+            thProd: "Produkt",
+            thExpiry: "Verfall",
+            thClient: "Kunde",
+            thQty: "Menge",
+            thCost: "Gesamtkosten",
+            thRev: "Verkaufserlös",
+            thProfit: "Gewinn",
+            thMargin: "Marge",
+            thWorth: "Rentabilität",
+            statusLoss: "❌ Verlust",
+            statusOk: "✅ Rentabel",
+            statusWarn: "⚠️ Geringe Marge",
+            profilePrompt: "Unternehmensname eingeben:",
+            renamePrompt: "Neuer Name:",
+            confirmDel: "Möchten Sie die Datenbank wirklich löschen für",
+            generalClient: "Allgemein",
+            chartTitle: "📈 Zeitlicher Verlauf und Gewinnvergleich",
+            lblScale: "Gruppieren nach:",
+            optYear: "Jahr",
+            optMonth: "Monat",
+            optWeek: "Woche",
+            optDay: "Tag",
+            optHour: "Stunde",
+            emptyChart: "Keine Datensätze verfügbar.",
+            navDb: "📋 DB",
+            navStats: "📈 Statistik",
+            lblStatsCost: "Gesamtkosten (Ausgewählt)",
+            lblStatsProfit: "Nettogewinn (Ausgewählt)",
+            filterTypes: "Nach Typ filtern:"
+        }
+    };
 
-    // Datos iniciales de ejemplo con FRUTAS CADAPA SL y un segundo perfil genérico
+    const STORAGE_KEY = 'db_krudb_v4_completo';
+
     const defaultData = {
-        currentProfile: 'FRUTAS CADAPA SL',
+        currentLang: 'es',
+        currentProfile: 'RENOMBRAME',
         profiles: {
-            'FRUTAS CADAPA SL': {
-                rules: { minMargin: 18, minProfit: 80 },
-                records: [
-                    { id: 1, date: '20/10/2026', product: 'Palet Naranja Navelina (900 kg)', client: 'Supermercados Levante', qty: 900, buyCost: 540, extraCost: 60, sellRevenue: 890 },
-                    { id: 2, date: '20/10/2026', product: 'Cajas Aguacate Hass Primera', client: 'Hostelería Centro', qty: 80, buyCost: 680, extraCost: 45, sellRevenue: 980 },
-                    { id: 3, date: '20/10/2026', product: 'Partida Tomate Pera', client: 'Merca Mayorista', qty: 500, buyCost: 350, extraCost: 50, sellRevenue: 430 },
-                    { id: 4, date: '20/10/2026', product: 'Lote Fresa con merma por transporte', client: 'Liquidación Local', qty: 120, buyCost: 260, extraCost: 40, sellRevenue: 275 }
-                ]
-            },
-            'DISTRIBUIDORA GENÉRICA SL': {
-                rules: { minMargin: 15, minProfit: 50 },
-                records: [
-                    { id: 101, date: '20/10/2026', product: 'Lote Aceite de Oliva Virgen 5L', client: 'Distribución Regional', qty: 60, buyCost: 1200, extraCost: 50, sellRevenue: 1550 }
-                ]
+            'RENOMBRAME': {
+                rules: { minMargin: 0, minProfit: 0 },
+                records: []
             }
         }
     };
 
     let appState = loadState();
+    let selectedTypes = new Set(); 
 
     function loadState() {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -385,36 +894,196 @@
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
     }
 
-    // Motor de cálculo automático (Tercer dato + Evaluación de rentabilidad)
-    function evaluateOperation(buyCost, extraCost, sellRevenue, rules) {
-        const totalCost = Number(buyCost) + Number(extraCost);
+    function t(key) {
+        const lang = appState.currentLang || 'es';
+        return translations[lang][key] || translations['es'][key] || key;
+    }
+
+    function switchLanguage(langCode) {
+        appState.currentLang = langCode;
+        saveState();
+        updateStaticTexts();
+        updateLivePreview();
+        renderTable();
+        if (document.getElementById('sectionStats').classList.contains('active')) {
+            renderFilters();
+            renderChart();
+        }
+    }
+
+    function switchView(viewName) {
+        document.getElementById('sectionDb').classList.remove('active');
+        document.getElementById('sectionStats').classList.remove('active');
+        document.getElementById('navDbBtn').classList.remove('btn-active');
+        document.getElementById('navStatsBtn').classList.remove('btn-active');
+
+        if (viewName === 'db') {
+            document.getElementById('sectionDb').classList.add('active');
+            document.getElementById('navDbBtn').classList.add('btn-active');
+        } else if (viewName === 'stats') {
+            document.getElementById('sectionStats').classList.add('active');
+            document.getElementById('navStatsBtn').classList.add('btn-active');
+            renderFilters(); 
+            renderChart();
+        }
+    }
+
+    function toggleAdvancedFilters() {
+        const panel = document.getElementById('advancedFilterPanel');
+        if(panel.style.display === 'none' || panel.style.display === '') {
+            panel.style.display = 'block';
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+
+    function clearFilters() {
+        document.getElementById('fDate').value = '';
+        document.getElementById('fBatch').value = '';
+        document.getElementById('fType').value = '';
+        document.getElementById('fProd').value = '';
+        document.getElementById('fExp').value = '';
+        document.getElementById('fClient').value = '';
+        document.getElementById('fQty').value = '';
+        document.getElementById('fCost').value = '';
+        document.getElementById('fRev').value = '';
+        document.getElementById('fProfit').value = '';
+        document.getElementById('fMargin').value = '';
+        document.getElementById('fViability').value = 'all';
+        document.getElementById('searchInput').value = '';
+        renderTable();
+    }
+
+    function updateStaticTexts() {
+        document.getElementById('langSelect').value = appState.currentLang;
+        document.getElementById('txtHeaderSubtitle').textContent = t('subtitle');
+        document.getElementById('txtFolderBar').innerHTML = `<strong>${t('folderText')}</strong>`;
+        document.getElementById('btnSaveJSON').textContent = t('btnSave');
+        document.getElementById('btnLoadJSON').textContent = t('btnLoad');
+        document.getElementById('btnExportCSV').textContent = t('btnExport');
+        document.getElementById('btnNewProfile').textContent = t('btnNew');
+        document.getElementById('navDbBtn').textContent = t('navDb');
+        document.getElementById('navStatsBtn').textContent = t('navStats');
+        
+        document.getElementById('kpiTitleCost').textContent = t('kpiCost');
+        document.getElementById('kpiTitleRev').textContent = t('kpiRev');
+        document.getElementById('kpiTitleProfit').textContent = t('kpiProfit');
+        document.getElementById('kpiTitleWorth').textContent = t('kpiWorth');
+
+        const editId = document.getElementById('editRecordId').value;
+        document.getElementById('formTitle').textContent = editId ? t('formTitleEdit') : t('formTitleAdd');
+        document.getElementById('btnSubmit').textContent = editId ? t('btnSubmitEdit') : t('btnSubmitAdd');
+        document.getElementById('btnCancelEdit').textContent = t('btnCancel');
+
+        document.getElementById('lblProd').textContent = t('lblProd');
+        document.getElementById('prodName').placeholder = t('prodPlace');
+        document.getElementById('lblType').textContent = t('lblType');
+        document.getElementById('prodType').placeholder = t('typePlace');
+        document.getElementById('lblBatch').innerHTML = `${t('lblBatch')} <span style="font-weight:normal; color:var(--muted);">${t('lblBatchOpt')}</span>`;
+        document.getElementById('lblExpiry').innerHTML = `${t('lblExpiry')} <span style="font-weight:normal; color:var(--muted);">${t('lblExpiryOpt')}</span>`;
+        document.getElementById('lblClient').textContent = t('lblClient');
+        document.getElementById('lblQty').textContent = t('lblQty');
+        document.getElementById('lblBuyCost').textContent = t('lblBuyCost');
+        document.getElementById('lblLogistics').textContent = t('lblLogistics');
+        document.getElementById('lblOther').textContent = t('lblOther');
+        document.getElementById('lblRevenue').textContent = t('lblRevenue');
+
+        document.getElementById('prevCostLabel').textContent = t('prevCost');
+        document.getElementById('prevProfitLabel').textContent = t('prevProfit');
+        document.getElementById('prevMarginLabel').textContent = t('prevMargin');
+        document.getElementById('prevVerdictLabel').textContent = t('prevVerdict');
+        document.getElementById('prevWaitText').textContent = t('prevWait');
+
+        document.getElementById('rulesTitle').textContent = t('rulesTitle');
+        document.getElementById('rulesDesc').textContent = t('rulesDesc');
+        document.getElementById('lblMinMargin').textContent = t('lblMinMargin');
+        document.getElementById('lblMinProfit').textContent = t('lblMinProfit');
+
+        document.getElementById('tableTitle').textContent = t('tableTitle');
+        document.getElementById('searchInput').placeholder = t('searchPlace');
+
+        document.getElementById('thDate').textContent = t('thDate');
+        document.getElementById('thBatch').textContent = t('thBatch');
+        document.getElementById('thType').textContent = t('thType');
+        document.getElementById('thProd').textContent = t('thProd');
+        document.getElementById('thExpiry').textContent = t('thExpiry');
+        document.getElementById('thClient').textContent = t('thClient');
+        document.getElementById('thQty').textContent = t('thQty');
+        document.getElementById('thCost').textContent = t('thCost');
+        document.getElementById('thRev').textContent = t('thRev');
+        document.getElementById('thProfit').textContent = t('thProfit');
+        document.getElementById('thMargin').textContent = t('thMargin');
+        document.getElementById('thWorth').textContent = t('thWorth');
+
+        document.getElementById('chartTitle').textContent = t('chartTitle');
+        document.getElementById('lblScale').textContent = t('lblScale');
+        document.getElementById('lblStatsCost').textContent = t('lblStatsCost');
+        document.getElementById('lblStatsProfit').textContent = t('lblStatsProfit');
+        document.getElementById('optYear').textContent = t('optYear');
+        document.getElementById('optMonth').textContent = t('optMonth');
+        document.getElementById('optWeek').textContent = t('optWeek');
+        document.getElementById('optDay').textContent = t('optDay');
+        document.getElementById('optHour').textContent = t('optHour');
+    }
+
+    function evaluateOperation(buyCost, extraCost, otherCost, sellRevenue, rules) {
+        const totalCost = Number(buyCost) + Number(extraCost) + Number(otherCost);
         const profit = Number(sellRevenue) - totalCost;
         const margin = totalCost > 0 ? (profit / totalCost) * 100 : (profit > 0 ? 100 : 0);
 
         let statusText = '';
         let badgeClass = '';
         let worthIt = false;
+        let rank = 0; // Para ordenar por viabilidad (0=Pérdida, 1=Bajo, 2=Rentable)
 
         if (profit <= 0) {
-            statusText = '❌ No vale la pena (Pérdida)';
+            statusText = t('statusLoss');
             badgeClass = 'badge-danger';
+            rank = 0;
         } else if (margin >= rules.minMargin && profit >= rules.minProfit) {
-            statusText = '✅ Vale la pena (Rentable)';
+            statusText = t('statusOk');
             badgeClass = 'badge-success';
             worthIt = true;
+            rank = 2;
         } else {
-            statusText = '⚠️ Margen bajo (No compensa)';
+            statusText = t('statusWarn');
             badgeClass = 'badge-warn';
+            rank = 1;
         }
 
-        return { totalCost, profit, margin, statusText, badgeClass, worthIt };
+        return { totalCost, profit, margin, statusText, badgeClass, worthIt, rank };
     }
 
     function formatCurrency(val) {
         return Number(val).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
     }
 
+    function formatDateDisplay(dateStr) {
+        if (!dateStr) return '-';
+        const parts = dateStr.split('-');
+        if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        return dateStr;
+    }
+    
+    // Convierte fechas para comparaciones
+    function parseDateObj(dateStr) {
+        if (!dateStr) return 0;
+        if (dateStr.includes('/')) {
+            const [d, m, y] = dateStr.split('/');
+            return new Date(y, m - 1, d).getTime();
+        }
+        return new Date(dateStr).getTime();
+    }
+    
+    function formatDateToES(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        return dateStr;
+    }
+
     function initUI() {
+        updateStaticTexts();
         const select = document.getElementById('profileSelect');
         select.innerHTML = '';
         Object.keys(appState.profiles).forEach(profileName => {
@@ -426,21 +1095,27 @@
         });
 
         const current = appState.profiles[appState.currentProfile];
-        document.getElementById('headerCompanyTitle').textContent = '📦 ' + appState.currentProfile;
+        document.getElementById('headerCompanyTitle').textContent = appState.currentProfile;
         document.getElementById('ruleMinMargin').value = current.rules.minMargin;
         document.getElementById('ruleMinProfit').value = current.rules.minProfit;
 
         updateLivePreview();
         renderTable();
+        
+        if (document.getElementById('sectionStats').classList.contains('active')) {
+            renderFilters();
+            renderChart();
+        }
     }
 
     function updateLivePreview() {
         const buy = parseFloat(document.getElementById('buyCost').value) || 0;
         const extra = parseFloat(document.getElementById('extraCost').value) || 0;
+        const other = parseFloat(document.getElementById('otherCost').value) || 0;
         const sell = parseFloat(document.getElementById('sellRevenue').value) || 0;
         const rules = appState.profiles[appState.currentProfile].rules;
 
-        const calc = evaluateOperation(buy, extra, sell, rules);
+        const calc = evaluateOperation(buy, extra, other, sell, rules);
 
         document.getElementById('prevTotalCost').textContent = formatCurrency(calc.totalCost);
         document.getElementById('prevProfit').textContent = formatCurrency(calc.profit);
@@ -449,27 +1124,87 @@
         document.getElementById('prevVerdict').innerHTML = `<span class="badge ${calc.badgeClass}">${calc.statusText}</span>`;
     }
 
-    function addRecord(e) {
+    function saveRecord(e) {
         e.preventDefault();
         const current = appState.profiles[appState.currentProfile];
-        const newRecord = {
-            id: Date.now(),
-            date: new Date().toLocaleDateString('es-ES'),
+        const editId = document.getElementById('editRecordId').value;
+
+        const recordData = {
+            batchNo: document.getElementById('batchNo').value.trim() || '-',
+            expiryDate: document.getElementById('expiryDate').value || '',
             product: document.getElementById('prodName').value.trim(),
-            client: document.getElementById('clientName').value.trim() || 'General',
+            type: document.getElementById('prodType').value.trim() || 'General',
+            client: document.getElementById('clientName').value.trim() || t('generalClient'),
             qty: parseFloat(document.getElementById('qty').value) || 1,
             buyCost: parseFloat(document.getElementById('buyCost').value) || 0,
             extraCost: parseFloat(document.getElementById('extraCost').value) || 0,
+            otherCost: parseFloat(document.getElementById('otherCost').value) || 0,
             sellRevenue: parseFloat(document.getElementById('sellRevenue').value) || 0
         };
 
-        current.records.unshift(newRecord);
+        if (editId) {
+            const index = current.records.findIndex(r => r.id == editId);
+            if (index !== -1) {
+                current.records[index] = { ...current.records[index], ...recordData };
+            }
+            cancelEdit();
+        } else {
+            const now = Date.now();
+            const newRecord = {
+                id: now,
+                date: new Date(now).toLocaleDateString('es-ES'),
+                ...recordData
+            };
+            current.records.unshift(newRecord);
+            document.getElementById('entryForm').reset();
+            document.getElementById('qty').value = 1;
+            document.getElementById('extraCost').value = 0;
+            document.getElementById('otherCost').value = 0;
+        }
+
         saveState();
+        updateLivePreview();
+        renderTable();
+        if (document.getElementById('sectionStats').classList.contains('active')) {
+            renderFilters();
+            renderChart();
+        }
+    }
+
+    function editRecord(id) {
+        const current = appState.profiles[appState.currentProfile];
+        const record = current.records.find(r => r.id == id);
+        if (!record) return;
+
+        document.getElementById('editRecordId').value = record.id;
+        document.getElementById('prodName').value = record.product;
+        document.getElementById('prodType').value = record.type || '';
+        document.getElementById('batchNo').value = record.batchNo === '-' ? '' : record.batchNo;
+        document.getElementById('expiryDate').value = record.expiryDate || '';
+        document.getElementById('clientName').value = record.client;
+        document.getElementById('qty').value = record.qty;
+        document.getElementById('buyCost').value = record.buyCost;
+        document.getElementById('extraCost').value = record.extraCost;
+        document.getElementById('otherCost').value = record.otherCost || 0;
+        document.getElementById('sellRevenue').value = record.sellRevenue;
+
+        document.getElementById('formTitle').textContent = t('formTitleEdit');
+        document.getElementById('btnSubmit').textContent = t('btnSubmitEdit');
+        document.getElementById('btnCancelEdit').style.display = 'inline-block';
+        updateLivePreview();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelEdit() {
+        document.getElementById('editRecordId').value = '';
         document.getElementById('entryForm').reset();
         document.getElementById('qty').value = 1;
         document.getElementById('extraCost').value = 0;
+        document.getElementById('otherCost').value = 0;
+        document.getElementById('formTitle').textContent = t('formTitleAdd');
+        document.getElementById('btnSubmit').textContent = t('btnSubmitAdd');
+        document.getElementById('btnCancelEdit').style.display = 'none';
         updateLivePreview();
-        renderTable();
     }
 
     function deleteRecord(id) {
@@ -477,6 +1212,10 @@
         current.records = current.records.filter(r => r.id !== id);
         saveState();
         renderTable();
+        if (document.getElementById('sectionStats').classList.contains('active')) {
+            renderFilters();
+            renderChart();
+        }
     }
 
     function saveRules() {
@@ -486,22 +1225,105 @@
         saveState();
         updateLivePreview();
         renderTable();
+        if (document.getElementById('sectionStats').classList.contains('active')) {
+            renderChart();
+        }
     }
 
     function renderTable() {
         const current = appState.profiles[appState.currentProfile];
-        const query = document.getElementById('searchInput').value.toLowerCase();
         const tbody = document.getElementById('dbTableBody');
         tbody.innerHTML = '';
 
-        let sumCost = 0, sumRev = 0, sumProfit = 0, countWorth = 0, totalShown = 0;
+        // 1. Obtener valores de los filtros
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        
+        const fDateStr = document.getElementById('fDate').value;
+        const fDateES = formatDateToES(fDateStr);
+        const fBatch = document.getElementById('fBatch').value.toLowerCase();
+        const fType = document.getElementById('fType').value.toLowerCase();
+        const fProd = document.getElementById('fProd').value.toLowerCase();
+        const fClient = document.getElementById('fClient').value.toLowerCase();
+        const fExp = document.getElementById('fExp').value;
+        
+        const fQty = parseFloat(document.getElementById('fQty').value);
+        const fCost = parseFloat(document.getElementById('fCost').value);
+        const fRev = parseFloat(document.getElementById('fRev').value);
+        const fProfit = parseFloat(document.getElementById('fProfit').value);
+        const fMargin = parseFloat(document.getElementById('fMargin').value);
+        const fViab = document.getElementById('fViability').value;
 
-        current.records.forEach(r => {
-            const calc = evaluateOperation(r.buyCost, r.extraCost, r.sellRevenue, current.rules);
-            const searchable = `${r.product} ${r.client} ${calc.statusText}`.toLowerCase();
-            if (query && !searchable.includes(query)) return;
+        // 2. Filtrar
+        let filteredRecords = current.records.filter(r => {
+            const other = r.otherCost || 0;
+            const batch = r.batchNo || '-';
+            const type = r.type || 'General';
+            const calc = evaluateOperation(r.buyCost, r.extraCost, other, r.sellRevenue, current.rules);
+            
+            // Búsqueda rápida general
+            const searchable = `${r.product} ${type} ${r.client} ${batch} ${calc.statusText}`.toLowerCase();
+            if (query && !searchable.includes(query)) return false;
 
-            totalShown++;
+            // Filtros Avanzados (Textos)
+            if (fDateES && r.date !== fDateES) return false;
+            if (fExp && r.expiryDate !== fExp) return false;
+            if (fBatch && !batch.toLowerCase().includes(fBatch)) return false;
+            if (fType && !type.toLowerCase().includes(fType)) return false;
+            if (fProd && !r.product.toLowerCase().includes(fProd)) return false;
+            if (fClient && !r.client.toLowerCase().includes(fClient)) return false;
+
+            // Filtros Avanzados (Números - Mínimos)
+            if (!isNaN(fQty) && r.qty < fQty) return false;
+            if (!isNaN(fCost) && calc.totalCost < fCost) return false;
+            if (!isNaN(fRev) && r.sellRevenue < fRev) return false;
+            if (!isNaN(fProfit) && calc.profit < fProfit) return false;
+            if (!isNaN(fMargin) && calc.margin < fMargin) return false;
+
+            // Filtro Viabilidad
+            if (fViab !== 'all') {
+                if (fViab === 'ok' && calc.rank !== 2) return false;
+                if (fViab === 'warn' && calc.rank !== 1) return false;
+                if (fViab === 'loss' && calc.rank !== 0) return false;
+            }
+
+            return true;
+        });
+
+        // 3. Ordenar
+        const sortVal = document.getElementById('sortSelect').value;
+        filteredRecords.sort((a, b) => {
+            const calcA = evaluateOperation(a.buyCost, a.extraCost, a.otherCost || 0, a.sellRevenue, current.rules);
+            const calcB = evaluateOperation(b.buyCost, b.extraCost, b.otherCost || 0, b.sellRevenue, current.rules);
+
+            switch(sortVal) {
+                case 'date_desc': return parseDateObj(b.date) - parseDateObj(a.date);
+                case 'date_asc': return parseDateObj(a.date) - parseDateObj(b.date);
+                case 'profit_desc': return calcB.profit - calcA.profit;
+                case 'profit_asc': return calcA.profit - calcB.profit;
+                case 'rev_desc': return b.sellRevenue - a.sellRevenue;
+                case 'rev_asc': return a.sellRevenue - b.sellRevenue;
+                case 'cost_desc': return calcB.totalCost - calcA.totalCost;
+                case 'cost_asc': return calcA.totalCost - calcB.totalCost;
+                case 'qty_desc': return b.qty - a.qty;
+                case 'qty_asc': return a.qty - b.qty;
+                case 'expiry_asc': return (parseDateObj(a.expiryDate) || Infinity) - (parseDateObj(b.expiryDate) || Infinity);
+                case 'expiry_desc': return (parseDateObj(b.expiryDate) || 0) - (parseDateObj(a.expiryDate) || 0);
+                case 'viability_desc': return calcB.rank - calcA.rank;
+                case 'viability_asc': return calcA.rank - calcB.rank;
+                default: return 0;
+            }
+        });
+
+        // 4. Renderizar e inyectar KPIs
+        let sumCost = 0, sumRev = 0, sumProfit = 0, countWorth = 0;
+
+        filteredRecords.forEach(r => {
+            const other = r.otherCost || 0;
+            const batch = r.batchNo || '-';
+            const expiry = r.expiryDate || '';
+            const type = r.type || 'General';
+            const calc = evaluateOperation(r.buyCost, r.extraCost, other, r.sellRevenue, current.rules);
+
             sumCost += calc.totalCost;
             sumRev += Number(r.sellRevenue);
             sumProfit += calc.profit;
@@ -510,50 +1332,221 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${r.date}</td>
+                <td><code>${batch}</code></td>
+                <td><span style="color:var(--muted); font-weight:600; font-size:0.8rem;">${type}</span></td>
                 <td><strong>${r.product}</strong></td>
+                <td>${formatDateDisplay(expiry)}</td>
                 <td>${r.client}</td>
                 <td class="num">${r.qty}</td>
-                <td class="num" title="Compra: ${formatCurrency(r.buyCost)} + Logística: ${formatCurrency(r.extraCost)}">${formatCurrency(calc.totalCost)}</td>
+                <td class="num">${formatCurrency(calc.totalCost)}</td>
                 <td class="num">${formatCurrency(r.sellRevenue)}</td>
                 <td class="num" style="font-weight:700; color:${calc.profit >= 0 ? '#166534' : '#991b1b'}">${formatCurrency(calc.profit)}</td>
                 <td class="num">${calc.margin.toFixed(1)}%</td>
                 <td><span class="badge ${calc.badgeClass}">${calc.statusText}</span></td>
-                <td class="num"><button class="btn btn-outline" style="padding:4px 8px;" onclick="deleteRecord(${r.id})">✕</button></td>
+                <td class="num" style="white-space: nowrap;">
+                    <button class="btn btn-warning" style="padding:4px 8px; font-size:0.75rem;" onclick="editRecord(${r.id})" title="Editar">✏️</button>
+                    <button class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteRecord(${r.id})" title="Eliminar">✕</button>
+                </td>
             `;
             tbody.appendChild(tr);
         });
 
+        // Actualizamos los KPIs generales del Perfil
         document.getElementById('kpiCost').textContent = formatCurrency(sumCost);
         document.getElementById('kpiRevenue').textContent = formatCurrency(sumRev);
         document.getElementById('kpiProfit').textContent = formatCurrency(sumProfit);
         document.getElementById('kpiProfit').style.color = sumProfit >= 0 ? '#166534' : '#991b1b';
-        document.getElementById('kpiWorthIt').textContent = `${countWorth} de ${totalShown}`;
+        document.getElementById('kpiWorthIt').textContent = `${countWorth} / ${filteredRecords.length}`;
     }
 
-    // Gestión de Perfiles / Distribuidores
+    function renderFilters() {
+        const current = appState.profiles[appState.currentProfile];
+        const filterContainer = document.getElementById('typeFilters');
+        
+        const uniqueTypes = new Set();
+        current.records.forEach(r => {
+            uniqueTypes.add(r.type || 'General');
+        });
+
+        if (selectedTypes.size === 0 && uniqueTypes.size > 0) {
+            uniqueTypes.forEach(t => selectedTypes.add(t));
+        }
+
+        filterContainer.innerHTML = `<strong style="margin-right: 10px;">${t('filterTypes')}</strong>`;
+        
+        const allBtn = document.createElement('button');
+        allBtn.className = 'btn btn-outline';
+        allBtn.style.padding = '4px 10px';
+        allBtn.style.fontSize = '0.8rem';
+        allBtn.textContent = 'Seleccionar Todos';
+        allBtn.onclick = () => {
+            uniqueTypes.forEach(type => selectedTypes.add(type));
+            renderFilters();
+            renderChart();
+        };
+        filterContainer.appendChild(allBtn);
+
+        uniqueTypes.forEach(type => {
+            const lbl = document.createElement('label');
+            lbl.className = 'filter-checkbox';
+            
+            const chk = document.createElement('input');
+            chk.type = 'checkbox';
+            chk.value = type;
+            chk.checked = selectedTypes.has(type);
+            chk.onchange = (e) => {
+                if(e.target.checked) selectedTypes.add(type);
+                else selectedTypes.delete(type);
+                renderChart();
+            };
+
+            lbl.appendChild(chk);
+            lbl.appendChild(document.createTextNode(type));
+            filterContainer.appendChild(lbl);
+        });
+    }
+
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+        return d.getUTCFullYear() + '-W' + String(weekNo).padStart(2, '0');
+    }
+
+    function renderChart() {
+        const current = appState.profiles[appState.currentProfile];
+        const scale = document.getElementById('timeScaleSelect').value;
+        const container = document.getElementById('chartContainer');
+        container.innerHTML = '';
+
+        let filteredCost = 0;
+        let filteredProfit = 0;
+
+        const filteredRecords = current.records.filter(r => selectedTypes.has(r.type || 'General'));
+
+        if (!filteredRecords || filteredRecords.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: var(--muted); padding: 50px; font-size: 0.95rem;">${t('emptyChart')}</div>`;
+            document.getElementById('statsTotalCost').textContent = '0,00 €';
+            document.getElementById('statsTotalProfit').textContent = '0,00 €';
+            document.getElementById('statsTotalProfit').style.color = 'var(--primary)';
+            return;
+        }
+
+        const groups = {};
+
+        filteredRecords.forEach(r => {
+            let timestamp = r.id;
+            if (!timestamp || isNaN(timestamp)) timestamp = Date.now();
+            const dateObj = new Date(timestamp);
+
+            let key = '';
+            let label = '';
+
+            if (scale === 'year') {
+                key = dateObj.getFullYear().toString();
+                label = key;
+            } else if (scale === 'month') {
+                const y = dateObj.getFullYear();
+                const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+                key = `${y}-${m}`;
+                const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                label = `${months[dateObj.getMonth()]} ${y}`;
+            } else if (scale === 'week') {
+                key = getWeekNumber(dateObj);
+                label = key;
+            } else if (scale === 'day') {
+                key = r.date || dateObj.toLocaleDateString('es-ES');
+                label = key;
+            } else if (scale === 'hour') {
+                const h = String(dateObj.getHours()).padStart(2, '0');
+                key = `${dateObj.toDateString()}-${h}`;
+                label = `${r.date} (${h}:00h)`;
+            }
+
+            const other = r.otherCost || 0;
+            const calc = evaluateOperation(r.buyCost, r.extraCost, other, r.sellRevenue, current.rules);
+
+            filteredCost += calc.totalCost;
+            filteredProfit += calc.profit;
+
+            if (!groups[key]) {
+                groups[key] = { label: label, profit: 0, count: 0 };
+            }
+            groups[key].profit += calc.profit;
+            groups[key].count += 1;
+        });
+
+        document.getElementById('statsTotalCost').textContent = formatCurrency(filteredCost);
+        document.getElementById('statsTotalProfit').textContent = formatCurrency(filteredProfit);
+        document.getElementById('statsTotalProfit').style.color = filteredProfit >= 0 ? '#166534' : '#991b1b';
+
+        const sortedKeys = Object.keys(groups).sort();
+        let maxProfit = Math.max(...sortedKeys.map(k => Math.abs(groups[k].profit)), 1);
+
+        const chartGrid = document.createElement('div');
+        chartGrid.style.cssText = "display: flex; align-items: flex-end; gap: 18px; height: 260px; padding: 20px 10px 10px 10px; border-bottom: 2px solid var(--border); overflow-x: auto;";
+
+        sortedKeys.forEach(k => {
+            const item = groups[k];
+            const profit = item.profit;
+            const heightPx = Math.max(Math.min((Math.abs(profit) / maxProfit) * 180, 180), 12);
+            const barColor = profit >= 0 ? '#166534' : '#991b1b';
+            const barBg = profit >= 0 ? '#dcfce7' : '#fee2e2';
+
+            const barWrapper = document.createElement('div');
+            barWrapper.style.cssText = "display: flex; flex-direction: column; align-items: center; flex: 1; min-width: 80px; height: 100%; justify-content: flex-end;";
+
+            const valDiv = document.createElement('div');
+            valDiv.style.cssText = `font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; color: ${profit >= 0 ? '#166534' : '#991b1b'}; white-space: nowrap;`;
+            valDiv.textContent = formatCurrency(profit);
+
+            const bar = document.createElement('div');
+            bar.style.cssText = `width: 100%; max-width: 45px; height: ${heightPx}px; background-color: ${barBg}; border: 1.5px solid ${barColor}; border-radius: 6px 6px 0 0; transition: height 0.3s ease;`;
+            bar.title = `${item.label}\nBeneficio: ${formatCurrency(profit)}\nOperaciones: ${item.count}`;
+
+            const labelDiv = document.createElement('div');
+            labelDiv.style.cssText = "font-size: 0.78rem; color: var(--muted); margin-top: 10px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; font-weight: 600;";
+            labelDiv.textContent = item.label;
+            labelDiv.title = item.label;
+
+            barWrapper.appendChild(valDiv);
+            barWrapper.appendChild(bar);
+            barWrapper.appendChild(labelDiv);
+            chartGrid.appendChild(barWrapper);
+        });
+
+        container.appendChild(chartGrid);
+    }
+
     function switchProfile(name) {
+        cancelEdit();
         appState.currentProfile = name;
         saveState();
+        selectedTypes.clear();
+        clearFilters();
         initUI();
     }
 
     function createNewProfile() {
-        const name = prompt('Introduce el nombre de la empresa o distribuidor (ej. HORTOFRUTÍCOLA SUR SL):');
+        const name = prompt(t('profilePrompt'));
         if (!name || !name.trim()) return;
         const clean = name.trim().toUpperCase();
         if (appState.profiles[clean]) {
             alert('Ese perfil ya existe.');
             return;
         }
-        appState.profiles[clean] = { rules: { minMargin: 15, minProfit: 50 }, records: [] };
+        appState.profiles[clean] = { rules: { minMargin: 0, minProfit: 0 }, records: [] };
         appState.currentProfile = clean;
         saveState();
+        selectedTypes.clear();
+        clearFilters();
         initUI();
     }
 
     function renameCurrentProfile() {
         const oldName = appState.currentProfile;
-        const newName = prompt('Nuevo nombre para el perfil:', oldName);
+        const newName = prompt(t('renamePrompt'), oldName);
         if (!newName || !newName.trim() || newName.trim().toUpperCase() === oldName) return;
         const clean = newName.trim().toUpperCase();
         appState.profiles[clean] = appState.profiles[oldName];
@@ -569,14 +1562,15 @@
             alert('Debe existir al menos un perfil activo.');
             return;
         }
-        if (!confirm(`¿Seguro que deseas eliminar la base de datos de "${appState.currentProfile}"?`)) return;
+        if (!confirm(`${t('confirmDel')} "${appState.currentProfile}"?`)) return;
         delete appState.profiles[appState.currentProfile];
         appState.currentProfile = Object.keys(appState.profiles)[0];
         saveState();
+        selectedTypes.clear();
+        clearFilters();
         initUI();
     }
 
-    // Guardar y Cargar por Carpetas (.JSON y .CSV)
     function exportProfileJSON() {
         const name = appState.currentProfile;
         const data = {
@@ -602,8 +1596,13 @@
                     appState.profiles[imported.profileName] = imported.profileData;
                     appState.currentProfile = imported.profileName;
                     saveState();
+                    selectedTypes.clear();
+                    clearFilters();
                     initUI();
-                    alert(`Base de datos "${imported.profileName}" cargada correctamente.`);
+                    
+                    setTimeout(() => {
+                        alert(`Base de datos "${imported.profileName}" cargada correctamente.`);
+                    }, 10);
                 } else {
                     alert('El archivo no tiene el formato correcto.');
                 }
@@ -617,10 +1616,14 @@
 
     function exportCSV() {
         const current = appState.profiles[appState.currentProfile];
-        let csv = 'Fecha;Producto;Cliente;Cantidad;Coste Compra;Logistica y Merma;Coste Total;Ingreso Venta;Beneficio Neto;Margen %;Evaluacion\n';
+        let csv = 'Fecha;Nº Lote;Tipo;Producto;Consumición Recomendada;Cliente;Cantidad;Coste Compra;Logistica y Merma;Otros Gastos;Coste Total;Ingreso Venta;Beneficio Neto;Margen %;Evaluacion\n';
         current.records.forEach(r => {
-            const c = evaluateOperation(r.buyCost, r.extraCost, r.sellRevenue, current.rules);
-            csv += `${r.date};"${r.product}";"${r.client}";${r.qty};${r.buyCost};${r.extraCost};${c.totalCost.toFixed(2)};${r.sellRevenue};${c.profit.toFixed(2)};${c.margin.toFixed(2)}%;"${c.statusText}"\n`;
+            const other = r.otherCost || 0;
+            const batch = r.batchNo || '';
+            const type = r.type || 'General';
+            const expiry = r.expiryDate || '';
+            const c = evaluateOperation(r.buyCost, r.extraCost, other, r.sellRevenue, current.rules);
+            csv += `${r.date};"${batch}";"${type}";"${r.product}";"${expiry}";"${r.client}";${r.qty};${r.buyCost};${r.extraCost};${other};${c.totalCost.toFixed(2)};${r.sellRevenue};${c.profit.toFixed(2)};${c.margin.toFixed(2)}%;"${c.statusText}"\n`;
         });
         const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
         const a = document.createElement('a');
@@ -632,4 +1635,4 @@
     initUI();
 </script>
 </body>
-</html> 
+</html>
